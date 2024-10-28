@@ -1,40 +1,72 @@
 import { useState } from 'react'
-import {GoogleLogin} from "@react-oauth/google"
 import './index.css'
+import { db } from './firebase'
+import { addDoc, collection } from 'firebase/firestore';
 
-export function Report() {
+export function Report(){
+    const [description, setDescription] = useState("");
+    const [location, setLocation] = useState("");
+    const [date, setDate] = useState("");
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        
+        addDoc(collection(db, "reports"),{
+            description: description,
+            location: location,
+            date: date,
+        })
+        .then(() => {
+            alert("Submitted");
+        })
+        .catch((error) =>{
+            alert(error.message);
+        })
+
+        setDescription("");
+        setLocation("");
+        setDate("");
+
+    }
 
     return(
         <div class="container1">
             <h1>Report <span id="itemType">Item</span></h1>
 
-            <form class="options" action="/report" method="POST" enctype="multipart/form-data">
-            <input type="hidden" id="type" name="type" value=""/>
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" required></textarea>
+            <form className="options" onSubmit={handleSubmit} id="reportForm">
+                
+                <label>Description:</label>
+                <textarea
+                    name="decription"
+                    id="description" 
+                    value={description} 
+                    placeholder='description'
+                    required
+                    onChange={(e) => setDescription(e.target.value)}>
+                </textarea>
 
-            <label for="location">Location:</label>
-            <input type="text" id="location" name="location" required/>
+                <label>Location:</label>
+                <input 
+                    name="location"
+                    id="location" 
+                    value={location}
+                    required
+                    placeholder='location'
+                    onChange={(e) => setLocation(e.target.value)}
+                />
 
-            <label for="date">Date:</label>
-            <input type="date" id="date" name="date" required></input>
+                <label>Date:</label>
+                <input 
+                    type="date" 
+                    id="date" 
+                    name="date"
+                    value={date}
+                    placeholder='date' 
+                    required
+                    onChange={(e) => setDate(e.target.value)}
+                    ></input>
 
-            <label for="time">Time:</label>
-            <input type="time" id="time" name="time" required/>
-
-            <label for="tags">Tags:</label>
-            <div id="tags">
-                <input type="checkbox" name="tags" value="Electronics"/> Electronics
-                <input type="checkbox" name="tags" value="Clothing"/> Clothing
-                <input type="checkbox" name="tags" value="Accessories"/> Accessories
-                <input type="checkbox" name="tags" value="Books"/> Books
-                <input type="checkbox" name="tags" value="Personal Items"/> Personal Items
-            </div>
-
-            <label for="image">Image (optional):</label>
-            <input type="file" id="image" name="image" accept="image/*"/>
-
-            <button type="submit">Submit Report</button>
+                <button type="submit">Submit Report</button>
             </form>
         </div>
     )
