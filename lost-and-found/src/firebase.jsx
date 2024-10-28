@@ -13,4 +13,8 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const db = getFirestore(firebaseApp);
+<<<<<<< HEAD
 export{ firebaseApp, db };
+=======
+export{ firebaseApp, db };
+>>>>>>> 97fc7c2 (update all)
